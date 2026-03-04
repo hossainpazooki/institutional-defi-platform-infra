@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+    app.kubernetes.io/name: api
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: idpa-sa
+      containers:
+        - name: api
+          image: institutional-defi-api:latest
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: HOME
+              value: /tmp
+            - name: USER
+              value: app
+            - name: TORCHINDUCTOR_CACHE_DIR
+              value: /tmp/torch-cache
+          envFrom:
+            - configMapRef:
+                name: api-config
+            - secretRef:
+                name: api-secrets
+          args: ["api"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "768Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: api

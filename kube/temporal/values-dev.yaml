@@ -1,0 +1,75 @@
+server:
+  replicaCount: 1
+
+  config:
+    persistence:
+      default:
+        driver: "sql"
+        sql:
+          driver: "postgres12"
+          host: "institutional-defi-temporal.celzkkdaebf2.us-east-1.rds.amazonaws.com"
+          port: 5432
+          database: "temporal"
+          user: "temporal_user"
+          existingSecret: temporal-db-credentials
+          secretName: temporal-db-credentials
+          secretKey: password
+          maxConns: 20
+          maxIdleConns: 20
+
+      visibility:
+        driver: "sql"
+        sql:
+          driver: "postgres12"
+          host: "institutional-defi-temporal.celzkkdaebf2.us-east-1.rds.amazonaws.com"
+          port: 5432
+          database: "temporal_visibility"
+          user: "temporal_user"
+          existingSecret: temporal-db-credentials
+          secretName: temporal-db-credentials
+          secretKey: password
+          maxConns: 20
+          maxIdleConns: 20
+
+  frontend:
+    replicaCount: 1
+
+  history:
+    replicaCount: 1
+
+  matching:
+    replicaCount: 1
+
+  worker:
+    replicaCount: 1
+
+web:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8080
+
+cassandra:
+  enabled: false
+
+mysql:
+  enabled: false
+
+postgresql:
+  enabled: false
+
+elasticsearch:
+  enabled: false
+
+prometheus:
+  enabled: false
+
+grafana:
+  enabled: false
+
+schema:
+  setup:
+    enabled: true
+  update:
+    enabled: true
