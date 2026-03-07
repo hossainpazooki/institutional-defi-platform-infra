@@ -20,10 +20,10 @@ replicas:
 images:
   - name: institutional-defi-api
     newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-api
-    newTag: latest
+    newTag: "5c7c04a"
   - name: institutional-defi-worker
     newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-worker
-    newTag: latest
+    newTag: "5c7c04a"
 
 patches:
   - patch: |-
