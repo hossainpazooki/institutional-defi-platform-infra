@@ -9,6 +9,8 @@ resources:
   - api-deployment.yaml
   - worker-deployment.yaml
   - api-service.yaml
+  - regulatory-workbench-deployment.yaml
+  - regulatory-workbench-service.yaml
   - external-secret.yaml
   - hpa-api.yaml
   - hpa-worker.yaml

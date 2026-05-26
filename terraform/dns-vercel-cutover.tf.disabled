@@ -1,0 +1,45 @@
+# Vercel cutover for dev.hossainpazooki.com (Phase E2 of unified plan).
+#
+# This file is NAMED with `.disabled` extension so Terraform DOES NOT load it.
+# When ready to cut over, rename to `dns.tf` (replacing the ALB-alias version).
+#
+# Per unified-plan decision 5 (Option A — same-origin rewrites):
+#   - dev.hossainpazooki.com points at Vercel
+#   - /v2/ws/* and /api/* are proxied through Vercel rewrites back to EKS ALB
+#     (see digital-assets-cross-border/next.config.mjs)
+#   - No separate api.dev subdomain
+#
+# Pre-cutover checklist (run, in order):
+#   1. Phase B7 deployed on EKS (curl k8s-...elb.amazonaws.com/v2/ws/trade/<id>
+#      returns 101 Switching Protocols)
+#   2. Phase E1 ingress with /v2/ws path applied + verified
+#   3. Phase D1 Vercel project deployed at the production URL
+#   4. NEXT_PUBLIC_WS_BASE_URL env var set in Vercel pointing at
+#      wss://dev.hossainpazooki.com/v2/ws (same-origin via rewrite)
+#   5. Vercel preview-URL regex handed to platform-api owner (Phase D3)
+#
+# Rollback: rename this file back to `.disabled`, `terraform apply` restores the
+# ALB-alias record. TTL is 60s so DNS propagation reverses within ~5 minutes.
+
+variable "vercel_dns_target" {
+  description = "Vercel-provided CNAME target for the production domain"
+  type        = string
+  # Default value provided by Vercel after the project's domain is added.
+  # Update via terraform.tfvars or `-var` flag before apply.
+  default     = "cname.vercel-dns.com"
+}
+
+# Renaming this resource block from `aws_route53_record.dev` to a new name forces
+# a destroy+create. Keep the same name to swap atomically — Terraform will plan
+# an in-place update changing type from A (alias) → CNAME.
+#
+# resource "aws_route53_record" "dev" {
+#   zone_id = data.aws_route53_zone.main.zone_id
+#   name    = "dev.${var.domain_name}"
+#   type    = "CNAME"
+#   ttl     = 60
+#   records = [var.vercel_dns_target]
+# }
+
+# When ready, uncomment the resource above AND DELETE the ALB-alias variant in
+# dns.tf. Plan should show exactly one update (the dev record).

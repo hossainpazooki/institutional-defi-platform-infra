@@ -16,14 +16,19 @@ replicas:
     count: 1
   - name: worker
     count: 1
+  - name: regulatory-workbench
+    count: 1
 
 images:
   - name: institutional-defi-api
     newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-api
-    newTag: "5c7c04a"
+    newTag: "c6d6526"
   - name: institutional-defi-worker
     newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-worker
-    newTag: "5c7c04a"
+    newTag: "c6d6526"
+  - name: institutional-defi-regulatory-workbench
+    newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-regulatory-workbench
+    newTag: "INITIAL"
 
 patches:
   - patch: |-

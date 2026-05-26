@@ -2,6 +2,8 @@
 
 Infrastructure-as-Code for the Institutional DeFi Platform. Manages AWS resources and Kubernetes deployments.
 
+> **Topology (2026-05-26):** platform-api on EKS; cross-border on Vercel via same-origin rewrites; `/v2/ws/*` routes to api-dev for live trading sessions. EKS cross-border manifests + ECR repo removed (see `dev/briefs/phase-summaries/F-eks-cleanup.md`).
+
 ## Repository Structure
 
 ```
