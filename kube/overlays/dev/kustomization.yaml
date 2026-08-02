@@ -12,34 +12,13 @@ resources:
 nameSuffix: -dev
 
 replicas:
-  - name: api
-    count: 1
-  - name: worker
-    count: 1
   - name: regulatory-workbench
     count: 1
 
 images:
-  - name: institutional-defi-api
-    newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-api
-    newTag: "c6d6526"
-  - name: institutional-defi-worker
-    newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-worker
-    newTag: "c6d6526"
   - name: institutional-defi-regulatory-workbench
     newName: 547729607601.dkr.ecr.us-east-1.amazonaws.com/institutional-defi-regulatory-workbench
     newTag: "INITIAL"
-
-patches:
-  - patch: |-
-      - op: replace
-        path: /spec/minReplicas
-        value: 1
-      - op: replace
-        path: /spec/maxReplicas
-        value: 1
-    target:
-      kind: HorizontalPodAutoscaler
 
 commonLabels:
   environment: dev

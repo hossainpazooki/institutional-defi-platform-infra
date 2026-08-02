@@ -30,14 +30,9 @@ output "eks_oidc_provider_arn" {
 # ECR
 # -----------------------------------------------------------------------------
 
-output "ecr_api_url" {
-  description = "ECR repository URL for API image"
-  value       = aws_ecr_repository.api.repository_url
-}
-
-output "ecr_worker_url" {
-  description = "ECR repository URL for worker image"
-  value       = aws_ecr_repository.worker.repository_url
+output "ecr_regulatory_workbench_url" {
+  description = "ECR repository URL for regulatory-workbench image"
+  value       = aws_ecr_repository.regulatory_workbench.repository_url
 }
 
 # -----------------------------------------------------------------------------

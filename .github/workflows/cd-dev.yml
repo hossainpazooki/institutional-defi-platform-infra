@@ -37,19 +37,18 @@ jobs:
       - name: Deploy to EKS
         run: kubectl apply -k kube/overlays/dev/
 
+      # api-dev/worker-dev rollouts and the /health smoke test were removed with
+      # the institutional-defi-platform-api decommission. regulatory-workbench
+      # is the only workload this overlay still deploys.
       - name: Restart Deployments
-        run: |
-          kubectl -n $NAMESPACE rollout restart deployment/api-dev
-          kubectl -n $NAMESPACE rollout restart deployment/worker-dev
+        run: kubectl -n $NAMESPACE rollout restart deployment/regulatory-workbench-dev
 
       - name: Wait for Rollout
-        run: |
-          kubectl -n $NAMESPACE rollout status deployment/api-dev --timeout=300s
-          kubectl -n $NAMESPACE rollout status deployment/worker-dev --timeout=300s
+        run: kubectl -n $NAMESPACE rollout status deployment/regulatory-workbench-dev --timeout=300s
 
       - name: Smoke Test
         run: |
-          kubectl -n $NAMESPACE port-forward svc/api-dev 8000:8000 &
+          kubectl -n $NAMESPACE port-forward svc/regulatory-workbench-dev 8080:80 &
           sleep 5
-          curl -sf http://localhost:8000/health | grep -q '"status":"healthy"'
+          curl -sf http://localhost:8080/ > /dev/null
           echo "Smoke test passed"

@@ -8,7 +8,8 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:547729607601:certificate/c71040ef-6eac-48d5-828f-27451bde6f00
-    alb.ingress.kubernetes.io/healthcheck-path: /health
+    # Was /health (the decommissioned API's probe); the workbench serves / only.
+    alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/group.name: institutional-defi-dev
 spec:
   ingressClassName: alb
@@ -16,18 +17,9 @@ spec:
     - host: dev.hossainpazooki.com
       http:
         paths:
-          # WebSocket — must be BEFORE the catch-all (longest-prefix-wins on ALB).
-          # Routes live-session WS endpoints from spec §7 (B7 in unified plan).
-          # No idle_timeout annotation needed: 20s/10s heartbeat in B7 sits well
-          # under ALB default 60s idle.
-          - path: /v2/ws
-            pathType: Prefix
-            backend:
-              service:
-                name: api-dev
-                port:
-                  number: 8000
-          # Frontend apps (path-based routing, longest prefix wins)
+          # Frontend apps (path-based routing, longest prefix wins).
+          # The /v2/ws and / routes to api-dev:8000 were removed when
+          # institutional-defi-platform-api was decommissioned; / is now unrouted.
           - path: /workbench
             pathType: Prefix
             backend:
@@ -35,11 +27,3 @@ spec:
                 name: regulatory-workbench-dev
                 port:
                   number: 80
-          # API catch-all (must be last)
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api-dev
-                port:
-                  number: 8000

@@ -8,12 +8,11 @@ data "aws_caller_identity" "current" {}
 module "builder_role" {
   source = "../modules/iam/builder"
 
-  project_name    = var.project_name
-  github_org      = var.github_org
-  api_repo_name   = var.api_repo_name
+  project_name  = var.project_name
+  github_org    = var.github_org
+  api_repo_name = var.api_repo_name
   ecr_repository_arns = [
-    aws_ecr_repository.api.arn,
-    aws_ecr_repository.worker.arn,
+    aws_ecr_repository.regulatory_workbench.arn,
   ]
 }
 
@@ -21,14 +20,13 @@ module "builder_role" {
 module "provisioner_role" {
   source = "../modules/iam/provisioner"
 
-  project_name     = var.project_name
-  github_org       = var.github_org
-  infra_repo_name  = var.infra_repo_name
-  aws_region       = var.aws_region
-  aws_account_id   = data.aws_caller_identity.current.account_id
+  project_name    = var.project_name
+  github_org      = var.github_org
+  infra_repo_name = var.infra_repo_name
+  aws_region      = var.aws_region
+  aws_account_id  = data.aws_caller_identity.current.account_id
   ecr_repository_arns = [
-    aws_ecr_repository.api.arn,
-    aws_ecr_repository.worker.arn,
+    aws_ecr_repository.regulatory_workbench.arn,
   ]
 }
 

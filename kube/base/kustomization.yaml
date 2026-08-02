@@ -3,19 +3,12 @@ kind: Kustomization
 
 namespace: institutional-defi
 
+# The api/worker workloads (and their service account, ExternalSecret, HPAs and
+# PDBs) were removed when institutional-defi-platform-api was decommissioned.
 resources:
   - namespace.yaml
-  - service-account.yaml
-  - api-deployment.yaml
-  - worker-deployment.yaml
-  - api-service.yaml
   - regulatory-workbench-deployment.yaml
   - regulatory-workbench-service.yaml
-  - external-secret.yaml
-  - hpa-api.yaml
-  - hpa-worker.yaml
-  - pdb-api.yaml
-  - pdb-worker.yaml
   - egress-common.yaml
 
 commonLabels:
