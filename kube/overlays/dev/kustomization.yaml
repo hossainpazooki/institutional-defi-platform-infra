@@ -5,7 +5,6 @@ namespace: institutional-defi-dev
 
 resources:
   - ../../base
-  - configmap.yaml
   - ingress.yaml
   - egress-app.yaml
 
